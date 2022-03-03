@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Set url for Google table sheet</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="subject">Subject:</label><br>
+        <input type="text" name="subject" id="subject"><br>
+        <label for="message">Message:</label><br>
+        <textarea name="message" id="message" cols="30" rows="10"></textarea><br>
+        <label for="sheet_url">Url for email table:</label><br>
+        <input type="text" name="sheet_url" id="sheet_url"><br>
+        <input type="submit" value="Send">
+    </form>
+</body>
+</html>
