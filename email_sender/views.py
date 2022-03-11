@@ -1,3 +1,4 @@
+from email import message
 from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 import pandas as pd
@@ -5,6 +6,7 @@ import urllib
 import smtplib
 from django.core.mail import EmailMessage
 from django.contrib import messages
+from time import sleep
 
 
 def homepage(request):
@@ -17,14 +19,21 @@ def homepage(request):
             sender_password = request.POST['password']
             if sender_email != '' and sender_password != '':
                 settings.EMAIL_HOST_USER = sender_email
-                settings.EMAIL_HOST_PASSWORD = sender_password                
+                settings.EMAIL_HOST_PASSWORD = sender_password 
+            counter = 0               
             for email in data['email']:
+                email_ad = email
+                counter += 1
                 email = email.replace(' ','')
                 print(email)
                 subject = f'Subject: {request.POST.get("subject")}'
                 body = f'Message:\n{request.POST["message"]}'
                 email = EmailMessage(subject, body, to=[email])
                 email.send()
+                if counter % 50 == 0:
+                    messages.info(request, f'{counter} messages sended! Last sended is {email_ad}')
+                    print('**********',counter," - is done!" )
+                    sleep(120)
             messages.info(request, 'All messages was sended!')
         except Exception as e:
             if isinstance(e, KeyError):
@@ -36,7 +45,7 @@ def homepage(request):
             elif isinstance(e, (smtplib.SMTPAuthenticationError)):
                 messages.error(request, f'Incorrect email settings (incorrect password, wrong or unconfigured email)! Message: {e}')
             else:
-                messages.error(request, 'Error. Something was wrong!')
+                messages.error(request, f'Error. Something was wrong! Message: {e}')
             print(type(e))
 
     return render(request, 'index.html')
